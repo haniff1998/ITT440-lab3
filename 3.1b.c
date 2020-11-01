@@ -1,27 +1,30 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 #include <signal.h>
-#include <unistd.h>
+int main(void){
+void sigint_handler(int sig);
+void sigtstp_handler(int sig);
+void sigquit_handler(int sig);
+void eof_handler(int sig);
+char s[200];
+signal(SIGINT, sigint_handler);
+signal(SIGQUIT, sigquit_handler);
+signal(SIGTSTP, sigtstp_handler);
+signal(EOF, eof_handler);
 
-void sig_handler(int signo)
-{
-    if (signo == SIGINT)
-        printf("received SIGINT\n");
-    else if (signo == SIGQUIT)
-        printf("received SIGQUIT\n");
-    else if (signo == SIGTSTP)
-        printf("received SIGTSTP\n");
+printf("Enter a string :\n");
+if (fgets(s,200, stdin) ==NULL)
+printf("this is a special signal handler for EOF\n");
+else
+printf("you entered: %s\n",s);
+return 0;
 }
-
-int main(void)
-{
-    if (signal(SIGINT, sig_handler) == SIG_ERR)
-        printf("\ncan't catch SIGINT\n");
-    if (signal(SIGQUIT, sig_handler) == SIG_ERR)
-        printf("\ncan't catch SIGQUIT\n");
-    if (signal(SIGTSTP, sig_handler) == SIG_ERR)
-        printf("\ncan't catch SIGTSTP\n");
-    // A long long wait so that we can easily issue a signal to this process
-    while(1) 
-        sleep(1);
-    return 0;
-}
+void sigint_handler (int sig){
+printf("This is a special signal hanler for SIGINT\n");}
+void sigtstp_handler(int sig){
+printf("this is a special signal handler for SIGTSTP\n");}
+void sigquit_handler(int sig){
+printf("this is a special signal handler for SIGQUIT\n");}
+void eof_handler(int sig){
+printf("this is a special signal handler for EOF\n");}
